@@ -106,7 +106,7 @@ window.onload = async () => {
 		push("Serious", "Skill Issue");
 		push("You are", "Cringe");
 		push("Current Status", "\u{D9E}");
-		push("Original website", "https://visit.japan.is");
+		//push("Original website", "https://visit.japan.is");
 	  };
   
 	  start.onclick = async () => {
