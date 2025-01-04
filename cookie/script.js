@@ -14,14 +14,21 @@ window.onload = async () => {
   
 	async function getRandomVideo(video_selection) {
 	  let videoData;
+	  video.preload = "auto"; // Preload the video
   
-	  if (video_selection === 0) {
-		videoData = await fetch("video.mp4").catch((error) => console.log(error));
-	  } else if (video_selection === 1) {
-		videoData = await fetch("video1.mp4").catch((error) => console.log(error));
+	  try {
+		if (video_selection === 0) {
+		  videoData = await fetch("video.mp4");
+		} else if (video_selection === 1) {
+		  videoData = await fetch("video1.mp4");
+		}
+		const blob = await videoData.blob();
+		video.src = URL.createObjectURL(blob);
+		video.load();
+	  } catch (error) {
+		console.error("Error loading video:", error);
+		throw error;
 	  }
-	  video.src = URL.createObjectURL(await videoData.blob());
-	  video.load();
 	}
   
 	const pick = (array) => array[Math.floor(Math.random() * array.length)];
@@ -112,11 +119,15 @@ window.onload = async () => {
 	  start.onclick = async () => {
 		start.style.display = "none";
 		video.style.display = "flex";
+		
+		// Cache the timing offsets for better performance
+		const timeOffset = video_selection === 0 ? 2.1 : 8.3;
+		const bpmOffset = video_selection === 0 ? 132 : 123;
+		
 		video.play();
   
 		const interval = setInterval(() => {
-		  const time = video_selection === 0 ? video.currentTime - 2.1 - (step * 60) / 132 : (video_selection === 1 ? video.currentTime - 8.3 - (step * 60) / 123 : console.log());
-		  //const time = video.currentTime - 8.3 - (step * 60) / 123; // 132 bpm moment
+		  const time = video.currentTime - timeOffset - (step * 60) / bpmOffset;
 		  if (step >= memes.length) step = -Infinity;
 		  if (step < 0) return clearInterval(interval);
 		  if (time >= 0) {
